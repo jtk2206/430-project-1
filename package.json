@@ -1,0 +1,27 @@
+{
+  "name": "430-project-1",
+  "version": "1.0.0",
+  "description": "Web API created using json",
+  "homepage": "https://github.com/jtk2206/430-project-1#readme",
+  "bugs": {
+    "url": "https://github.com/jtk2206/430-project-1/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jtk2206/430-project-1.git"
+  },
+  "license": "ISC",
+  "author": "Jason Kogan",
+  "type": "commonjs",
+  "main": "eslint.config.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./src --fix",
+    "test": "echo \"Tests complete\""
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.12.0",
+    "globals": "^17.13.0"
+  }
+}
