@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Our simple HTTP server</title>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+  
+  <script>
+    const handleResponse = async (response, parseResponse) => {
+      
+      const content = document.querySelector('#content');
+
+      switch(response.status) {
+        case 200:
+          content.innerHTML = `<b>Success, ${response.status}</b>`;
+          break;
+        case 201:
+          content.innerHTML = `<b>Created, ${response.status}</b>`;
+          break;
+        case 204:
+          content.innerHTML = `<b>Updated (No Content), ${response.status}</b>`;
+          return;
+        case 400:
+          content.innerHTML = `<b>Bad Request, ${response.status}</b>`;
+          break;
+        case 404:
+          content.innerHTML = `<b>Not Found, ${response.status}</b>`;
+          break;
+        default:
+          content.innerHTML = `Error code not implemented by client.`;
+          break;
+      }
+
+      if (parseResponse){
+        const obj = await response.json();
+        console.log(obj);
+        
+        if(obj.message){
+          content.innerHTML += `<p>Message: ${obj.message}</p>`;
+        } else{
+          content.innerHTML += `<p>${JSON.stringify(obj)}</p>`;
+        }
+      }
+    };
+
+    const requestUpdate = async (pokemonForm) => {
+      
+      const url = pokemonForm.querySelector('#urlField').value;
+      const method = pokemonForm.querySelector('#methodSelect').value;
+      
+      let response = await fetch(url, {
+        method,
+        headers: {
+            'Accept': 'application/json'
+        },
+      });
+
+      handleResponse(response, method === 'get');
+    };
+
+    const sendPost = async (nameForm) => {
+      const url = nameForm.getAttribute('action');
+      const method = nameForm.getAttribute('method');
+      
+      const name = nameForm.querySelector('#nameField').value;
+      const types = nameForm.querySelector('#typesField').value;
+      const weaknesses = nameForm.querySelector('#weaknessesField').value;
+
+      let formData = `name=${name}&types=${types}&weaknesses=${weaknesses}`;
+
+
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Length': formData.length,
+          'Accept': 'application/json',
+        },
+        body: formData,
+      });
+
+      handleResponse(response, true);
+    };
+
+    const init = () => {
+      const nameForm = document.querySelector('#nameForm');
+      const generationForm = document.querySelector('#generationForm');
+      const pokemonForm = document.querySelector('#pokemonForm');
+      
+      const addPokemon = (e) => {
+        e.preventDefault();
+        sendPost(nameForm);
+        return false;
+      }
+
+      const addGeneration = (e) => {
+        e.preventDefault();
+        sendPost(generationForm);
+        return false;
+      }
+      
+      const getPokemon = (e) => {
+        e.preventDefault();
+        requestUpdate(pokemonForm);
+        return false;
+      }
+
+      nameForm.addEventListener('submit', addPokemon);
+      generationForm.addEventListener('submit', addGeneration);
+      pokemonForm.addEventListener('submit', getPokemon);
+    };
+
+    window.onload = init;
+  </script>
+</head>
+<body>
+  <section id="top">
+    <h3>Pokemon API Method Tests</h3>
+    <form id="nameForm" action="/addPokemon" method="post">
+      <label for="name">Name: </label>
+      <input id="nameField" type="text" name="name" />
+      <label for="types">Types: </label>
+      <input id="typesField" type="text" name="types" min="0" max="100" step="1"/>
+      <label for="types">Weaknesses: </label>
+      <input id="weaknessesField" type="text" name="weaknesses" min="0" max="100" step="1"/>
+      <input type="submit" value="Add Pokemon" />
+    </form>
+    <form id="generationForm" action="/addGeneration" method="post">
+      <label for="name">Name: </label>
+      <input id="nameField" type="text" name="name" />
+      <label for="types">Generation: </label>
+      <input id="typesField" type="text" name="types" min="0" max="100" step="1"/>
+      <input type="submit" value="Add Generation" />
+    </form>
+    <form id="pokemonForm" action="/getPokemon" method="get">
+      <select id='urlField'>
+        <option value='/getPokemonNames'>/getPokemonNames</option>
+        <option value='/getPokemon'>/getPokemon</option>
+        <option value='/getPokemonByName'>/getPokemonByName</option>
+        <option value='/getAllPokemon'>/getAllPokemon</option>
+        <option value='/notReal'>/notReal</option>
+      </select>
+      <select id="methodSelect">
+        <option value="get">GET</option>
+        <option value="head">HEAD</option>
+      </select>
+      <input type="submit" value="Get Pokemon" />
+    </form>
+  </section>
+  <section id="content">
+  </section>
+</body>
+</html>
