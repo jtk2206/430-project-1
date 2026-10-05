@@ -36,8 +36,10 @@ const parseBody = (request, response, handler) => {
 };
 
 const handlePost = (request, response, parsedUrl) => {
-  if (parsedUrl.pathname === '/addUser') {
-    parseBody(request, response, jsonHandler.addUser);
+  if (parsedUrl.pathname === '/addPokemon') {
+    parseBody(request, response, jsonHandler.addPokemon);
+  } else if (parsedUrl.pathname === '/addGeneration'){
+    parseBody(request, response, jsonHandler.addGeneration);
   }
 };
 
@@ -46,8 +48,14 @@ const handleGet = (request, response, parsedUrl) => {
     htmlHandler.getIndex(request,response);
   }else if (parsedUrl.pathname === '/style.css') {
     htmlHandler.getCSS(request, response);
-  } else if (parsedUrl.pathname === '/getUsers') {
-    jsonHandler.getUsers(request, response);
+  } else if (parsedUrl.pathname === '/getPokemonNames') {
+    jsonHandler.getPokemonNames(request, response);
+  } else if (parsedUrl.pathname === '/getPokemon') {
+    jsonHandler.getPokemon(request, response);
+  } else if (parsedUrl.pathname === '/getPokemonByName') {
+    jsonHandler.getPokemonByName(request, response);
+  } else if (parsedUrl.pathname === '/getAllPokemon') {
+    jsonHandler.getAllPokemon(request, response);
   } else {
     jsonHandler.notFound(request, response);
   }
@@ -56,6 +64,7 @@ const handleGet = (request, response, parsedUrl) => {
 const onRequest = (request, response) => {
   const protocol = request.connection.encrypted ? 'https' : 'http';
   const parsedUrl = new URL(request.url, `${protocol}://${request.headers.host}`);
+  request.query = Object.fromEntries(parsedUrl.searchParams);
 
   if (request.method === 'POST') {
     handlePost(request, response, parsedUrl);

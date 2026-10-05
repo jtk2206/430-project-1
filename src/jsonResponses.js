@@ -26,16 +26,15 @@ const getPokemonNames = (request, response) => {
 
 const getPokemon = (request, response) => {
   let returnPokemon = pokemon;
-  const { name, type, weaknesses } = request.body;
 
-  if (name){
-    returnPokemon = returnPokemon.filter(pokemon => pokemon.name === name);
+  if (request.query.name){
+    returnPokemon = returnPokemon.filter(pokemon => pokemon.name === request.query.name);
   }
-  if (type){
-    returnPokemon = returnPokemon.filter(pokemon => pokemon.type.includes(type));
+  if (request.query.type){
+    returnPokemon = returnPokemon.filter(pokemon => pokemon.type.includes(request.query.type));
   }
-  if (weaknesses){
-    returnPokemon = returnPokemon.filter(pokemon => pokemon.weaknesses.includes(weaknesses));
+  if (request.query.weaknesses){
+    returnPokemon = returnPokemon.filter(pokemon => pokemon.weaknesses.includes(request.query.weaknesses));
   }
 
   const responseJSON = {
@@ -51,10 +50,9 @@ const getPokemonByName = (request, response) => {
   };
 
   let returnPokemon = pokemon;
-  const { name } = request.body;
 
-  if (name){
-    returnPokemon = returnPokemon.filter(pokemon => pokemon.name === name);
+  if (request.query.name){
+    returnPokemon = returnPokemon.filter(pokemon => pokemon.name === request.query.name);
   } else{
     responseJSON.id = 'getPokemonMissingParams';
     return respondJSON(request, response, 400, responseJSON);
