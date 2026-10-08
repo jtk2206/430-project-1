@@ -91,17 +91,25 @@ const addPokemon = (request, response) => {
   }
 
   let responseCode = 204;
+  const addedPokemon = pokemon.find(pokemon => pokemon.name === name);
 
-  if (!pokemon[name] && !pokemon[types]) {
+  if (!addedPokemon) {
     responseCode = 201;
-    pokemon[name] = {
+    if (!weaknesses){
+      pokemon.push({
       name: name,
-      types: types,
-    };
-  }
-
-  if (weaknesses){
-    pokemon[name].weaknesses = weaknesses;
+      type: [types],
+      });
+    } else{
+      pokemon.push({
+      name: name,
+      type: [types],
+      weaknesses: [weaknesses],
+      });
+    }
+  } else{
+    addedPokemon.type = [types];
+    if (weaknesses) addedPokemon.weaknesses = [weaknesses];
   }
 
   if (responseCode === 201) {
@@ -124,13 +132,15 @@ const addGeneration = (request, response) => {
     return respondJSON(request, response, 400, responseJSON);
   }
 
-  if (!pokemon[name]){
+  const editedPokemon = pokemon.find(pokemon => pokemon.name === name);
+
+  if (!editedPokemon){
     responseJSON.message = 'No pokemon with given name exists'
     responseJSON.id = 'noPokemonToEdit';
-    return respondJSON(request, response, 400, responseJSON);
+    return respondJSON(request, response, 404, responseJSON);
   }
 
-  pokemon[name].generation = generation;
+  editedPokemon.generation = generation;
   return respondJSON(request, response, 204, {});
 };
 

@@ -16,8 +16,11 @@ html, body {
 
 #content {
   margin-top: 100px;
-  font-size: 2em;
   text-align: center;
+}
+
+#content b {
+  font-size: 2em;
 }
 
 form {
@@ -25,5 +28,5 @@ form {
 }
 
 h3 {
-  margin: 4px;
+  margin: 5px;
 }

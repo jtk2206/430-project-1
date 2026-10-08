@@ -54,7 +54,7 @@
           const pokemonName = form.querySelector('#getPokemonNameField').value;
           const types = form.querySelector('#getTypesField').value;
           const weaknesses = form.querySelector('#getWeaknessesField').value;
-          url += `?name=${pokemonName}&types=${types}&weaknesses=${weaknesses}`;
+          url += `?name=${pokemonName}&type=${types}&weaknesses=${weaknesses}`;
           method = form.querySelector('#getPokemonMethodSelect').value;
           break;
         case document.querySelector("#getPokemonByNameForm"):
@@ -153,9 +153,9 @@
     <form id="getPokemonForm" action="/getPokemon" method="get">
       <label for="name">Name: </label>
       <input id="getPokemonNameField" type="text" name="name" />
-      <label for="types">Types: </label>
+      <label for="types">Type(only one): </label>
       <input id="getTypesField" type="text" name="types" min="0" max="100" step="1"/>
-      <label for="weaknesses">Weaknesses: </label>
+      <label for="weaknesses">Weakness(only one): </label>
       <input id="getWeaknessesField" type="text" name="weaknesses" min="0" max="100" step="1"/>
       <select id="getPokemonMethodSelect">
         <option value="get">GET</option>
