@@ -48,6 +48,8 @@ const handleGet = (request, response, parsedUrl) => {
     htmlHandler.getIndex(request,response);
   }else if (parsedUrl.pathname === '/style.css') {
     htmlHandler.getCSS(request, response);
+  } else if (parsedUrl.pathname === '/documentation') {
+    htmlHandler.getDocumentation(request, response);
   } else if (parsedUrl.pathname === '/getPokemonNames') {
     jsonHandler.getPokemonNames(request, response);
   } else if (parsedUrl.pathname === '/getPokemon') {

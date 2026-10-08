@@ -17,7 +17,7 @@
           content.innerHTML = `<b>Created, ${response.status}</b>`;
           break;
         case 204:
-          content.innerHTML = `<b>Updated (No Content), ${response.status}</b>`;
+          content.innerHTML = `<b>Updated, ${response.status}</b>`;
           return;
         case 400:
           content.innerHTML = `<b>Bad Request, ${response.status}</b>`;
@@ -139,6 +139,8 @@
   </script>
 </head>
 <body>
+<a href="/">Test the API</a>
+<a href="documentation">View the Documentation</a>
   <section id="top">
     <h1>Pokemon API Method Tests</h1>
     <h3>/getPokemonNames</h3>

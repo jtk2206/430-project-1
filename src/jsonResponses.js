@@ -79,7 +79,7 @@ const getAllPokemon = (request, response) => {
 };
 
 const addPokemon = (request, response) => {
-  const responseJSON = {
+  let responseJSON = {
     message: 'Name and types are required',
   };
 
@@ -112,8 +112,12 @@ const addPokemon = (request, response) => {
     if (weaknesses) addedPokemon.weaknesses = [weaknesses];
   }
 
+  const newPokemon = pokemon.find(pokemon => pokemon.name === name);
+  
   if (responseCode === 201) {
-    responseJSON.message = 'Created Successfully';
+    responseJSON = {
+      newPokemon: newPokemon,
+    };
     return respondJSON(request, response, responseCode, responseJSON);
   }
 
@@ -141,7 +145,7 @@ const addGeneration = (request, response) => {
   }
 
   editedPokemon.generation = generation;
-  return respondJSON(request, response, 204, {});
+  return respondJSON(request, response, 204, editedPokemon);
 };
 
 const notFound = (request, response) => {

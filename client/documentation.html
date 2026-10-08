@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Our simple HTTP server</title>
+  <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+<body>
+<a href="/">Test the API</a>
+<a href="documentation">View the Documentation</a>
+  <section id="docu">
+    <h1>Pokemon API Documentation</h1>
+    <div class="endpoint">
+        <h3>/getPokemonNames (GET, HEAD)</h3>
+        <b>Query Params:</b>
+        <p>None</p>
+        <b>Returns:</b>
+        <p>JSON array of pokemon names, formatted [string]</p>
+        <b>Examples:</b>
+        <p>Request: /getPokemonNames</p>
+        <p>Result: {"names":["Bulbasaur","Ivysaur","Venusaur","Charmander"...</p>
+    </div>
+    <div class="endpoint">
+        <h3>/getPokemon (GET, HEAD)</h3>
+        <b>Query Params:</b>
+        <p>Name(Optional): Name of the pokemon to filter by</p>
+        <p>Type(Optional): Type of pokemon to filter by, only supports one type</p>
+        <p>Weakness(Optional): Weakness of pokemon to filter by, only supports one weakness</p>
+        <b>Returns:</b>
+        <p>JSON array of pokemon objects</p>
+        <p>Format: {"returnPokemon":[{"id":1,"num":"001","name":"Bulbasaur","img":"http:/...</p>
+        <b>Examples:</b>
+        <p>Request: /getPokemon?type=Fire</p>
+        <p>Result: {"returnPokemon":[{"id":4,"num":"004","name":"Charmander","img":...</p>
+    </div>
+    <div class="endpoint">
+        <h3>/getPokemonByName (GET, HEAD)</h3>
+        <b>Query Params:</b>
+        <p>Name(Required): Name of the pokemon you are looking for</p>
+        <b>Returns:</b>
+        <p>JSON pokemon object</p>
+        <p>Format: {"returnPokemon":[{"id":1,"num":"001","name":"Bulbasaur","img"...</p>
+        <b>Examples:</b>
+        <p>Request: /getPokemonByName</p>
+        <p>Result: 400 Error</p>
+        <p>Request: /getPokemonByName?name=idontexist</p>
+        <p>Result: 404 Error</p>
+        <p>Request: /getPokemonByName?name=Pikachu</p>
+        <p>Result: {"returnPokemon":[{"id":25,"num":"025","name":"Pikachu","img"...</p>
+    </div>
+    <div class="endpoint">
+        <h3>/getAllPokemon (GET, HEAD)</h3>
+        <b>Query Params:</b>
+        <p>None</p>
+        <b>Returns:</b>
+        <p>JSON array of pokemon objects</p>
+        <p>Format: {"pokemon":[{"id":1,"num":"001","name":"Bulbasaur","img"...</p>
+        <b>Examples:</b>
+        <p>Request: /getAllPokemon</p>
+        <p>Result: {"pokemon":[{"id":1,"num":"001","name":"Bulbasaur","img"...</p>
+    </div>
+    <div class="endpoint">
+        <h3>/addPokemon (POST)</h3>
+        <b>Supported Body Formats</b>
+        <p>application/json, application/x-www-form-urlencoded</p>
+        <b>Body Params:</b>
+        <p>Name(Required): Name of the pokemon</p>
+        <p>Types(Required): Type(s) of the pokemon</p>
+        <p>Weaknesses(Optional): Weakness(es) of the pokemon</p>
+        <b>Returns:</b>
+        <p>The new JSON pokemon object</p>
+        <p>Format: {"newPokemon":{"name":"Test","type":["testType"]}}</p>
+        <b>Examples:</b>
+        <p>Request: /addPokemon</p>
+        <p>Body: {"name":"Test","type":'testType1,testType2',weaknesses:'testWeakness'"}}</p>
+        <p>Result: {"newPokemon":{"name":"Test","type":["testType,testType2"],"weaknesses":["testWeakness"]}}</p>
+        <p>Request: /addPokemon</p>
+        <p>Body: {"name":"Test2",weaknesses:'testWeakness'"}}</p>
+        <p>Result: 400 Error</p>
+    </div>
+    <div class="endpoint">
+        <h3>/addGeneration (POST)</h3>
+        <b>Supported Body Formats</b>
+        <p>application/json, application/x-www-form-urlencoded</p>
+        <b>Body Params:</b>
+        <p>Name(Required): Name of the pokemon</p>
+        <p>Generation(Required): Generation of the pokemon</p>
+        <b>Returns:</b>
+        <p>No Content</p>
+        <b>Examples:</b>
+        <p>Request: /addGeneration</p>
+        <p>Body: {"name":"Test","generation":'testGen'"}}</p>
+        <p>Result: Updated, 204</p>
+        <p>Request: /addGeneration</p>
+        <p>Body: {"name":"Test2""}}</p>
+        <p>Result: 400 Error</p>
+        <p>Request: /addGeneration</p>
+        <p>Body: {"name":"dontexist",generation'testGeneration'"}}</p>
+        <p>Result: 404 Error</p>
+    </div>
+  </section>
+  <section id="content">
+  </section>
+</body>
+</html>

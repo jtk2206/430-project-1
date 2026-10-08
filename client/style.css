@@ -30,3 +30,11 @@ form {
 h3 {
   margin: 5px;
 }
+
+.endpoint{
+  padding-bottom: 24px;
+}
+
+.endpoint b {
+  font-size: 1;
+}
