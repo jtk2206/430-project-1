@@ -42,10 +42,30 @@
       }
     };
 
-    const requestUpdate = async (pokemonForm) => {
-      
-      const url = pokemonForm.querySelector('#urlField').value;
-      const method = pokemonForm.querySelector('#methodSelect').value;
+    const requestUpdate = async (form) => {
+      let url = form.getAttribute('action');
+      let method;
+
+      switch(form) {
+        case document.querySelector("#getPokemonNamesForm"):
+          method = form.querySelector('#getNamesMethodSelect').value;
+          break;
+        case document.querySelector("#getPokemonForm"):
+          const pokemonName = form.querySelector('#getPokemonNameField').value;
+          const types = form.querySelector('#getTypesField').value;
+          const weaknesses = form.querySelector('#getWeaknessesField').value;
+          url += `?name=${pokemonName}&types=${types}&weaknesses=${weaknesses}`;
+          method = form.querySelector('#getPokemonMethodSelect').value;
+          break;
+        case document.querySelector("#getPokemonByNameForm"):
+          const name = form.querySelector('#getByNameField').value;
+          url += `?name=${name}`;
+          method = form.querySelector('#byNameMethodSelect').value;
+          break;
+        case document.querySelector("#getAllPokemonForm"):
+          method = form.querySelector('#allMethodSelect').value;
+          break;
+      }
       
       let response = await fetch(url, {
         method,
@@ -57,15 +77,21 @@
       handleResponse(response, method === 'get');
     };
 
-    const sendPost = async (nameForm) => {
-      const url = nameForm.getAttribute('action');
-      const method = nameForm.getAttribute('method');
+    const sendPost = async (form) => {
+      const url = form.getAttribute('action');
+      const method = form.getAttribute('method');
+      let formData;
       
-      const name = nameForm.querySelector('#nameField').value;
-      const types = nameForm.querySelector('#typesField').value;
-      const weaknesses = nameForm.querySelector('#weaknessesField').value;
-
-      let formData = `name=${name}&types=${types}&weaknesses=${weaknesses}`;
+      if (form === document.querySelector('#addPokemonForm')){
+        const name = form.querySelector('#addNameField').value;
+        const types = form.querySelector('#addTypesField').value;
+        const weaknesses = form.querySelector('#addWeaknessesField').value;
+        formData = `name=${name}&types=${types}&weaknesses=${weaknesses}`;
+      } else{
+        const name = form.querySelector('#generationNameField').value;
+        const generation = form.querySelector('#generationField').value;
+        formData = `name=${name}&generation=${generation}`;
+      }
 
 
       const response = await fetch(url, {
@@ -82,31 +108,31 @@
     };
 
     const init = () => {
-      const nameForm = document.querySelector('#nameForm');
+      const nameForm = document.querySelector('#addPokemonForm');
       const generationForm = document.querySelector('#generationForm');
-      const pokemonForm = document.querySelector('#pokemonForm');
+      const getPokemonNamesForm = document.querySelector('#getPokemonNamesForm');
+      const getPokemonForm = document.querySelector('#getPokemonForm');
+      const getPokemonByNameForm = document.querySelector('#getPokemonByNameForm');
+      const getAllPokemonForm = document.querySelector('#getAllPokemonForm');
       
-      const addPokemon = (e) => {
+      const postListener = (e, form) => {
         e.preventDefault();
-        sendPost(nameForm);
-        return false;
-      }
-
-      const addGeneration = (e) => {
-        e.preventDefault();
-        sendPost(generationForm);
+        sendPost(form);
         return false;
       }
       
-      const getPokemon = (e) => {
+      const getListener = (e, form) => {
         e.preventDefault();
-        requestUpdate(pokemonForm);
+        requestUpdate(form);
         return false;
       }
 
-      nameForm.addEventListener('submit', addPokemon);
-      generationForm.addEventListener('submit', addGeneration);
-      pokemonForm.addEventListener('submit', getPokemon);
+      nameForm.addEventListener('submit', (e) => postListener(e,nameForm));
+      generationForm.addEventListener('submit', (e) => postListener(e,generationForm));
+      getPokemonNamesForm.addEventListener('submit', (e) => getListener(e,getPokemonNamesForm));
+      getPokemonForm.addEventListener('submit', (e) => getListener(e,getPokemonForm));
+      getPokemonByNameForm.addEventListener('submit', (e) => getListener(e,getPokemonByNameForm));
+      getAllPokemonForm.addEventListener('submit', (e) => getListener(e,getAllPokemonForm));
     };
 
     window.onload = init;
@@ -114,36 +140,64 @@
 </head>
 <body>
   <section id="top">
-    <h3>Pokemon API Method Tests</h3>
-    <form id="nameForm" action="/addPokemon" method="post">
-      <label for="name">Name: </label>
-      <input id="nameField" type="text" name="name" />
-      <label for="types">Types: </label>
-      <input id="typesField" type="text" name="types" min="0" max="100" step="1"/>
-      <label for="types">Weaknesses: </label>
-      <input id="weaknessesField" type="text" name="weaknesses" min="0" max="100" step="1"/>
-      <input type="submit" value="Add Pokemon" />
-    </form>
-    <form id="generationForm" action="/addGeneration" method="post">
-      <label for="name">Name: </label>
-      <input id="nameField" type="text" name="name" />
-      <label for="types">Generation: </label>
-      <input id="typesField" type="text" name="types" min="0" max="100" step="1"/>
-      <input type="submit" value="Add Generation" />
-    </form>
-    <form id="pokemonForm" action="/getPokemon" method="get">
-      <select id='urlField'>
-        <option value='/getPokemonNames'>/getPokemonNames</option>
-        <option value='/getPokemon'>/getPokemon</option>
-        <option value='/getPokemonByName'>/getPokemonByName</option>
-        <option value='/getAllPokemon'>/getAllPokemon</option>
-        <option value='/notReal'>/notReal</option>
+    <h1>Pokemon API Method Tests</h1>
+    <h3>/getPokemonNames</h3>
+    <form id="getPokemonNamesForm" action="/getPokemonNames" method="get">
+      <select id="getNamesMethodSelect">
+        <option value="get">GET</option>
+        <option value="head">HEAD</option>
       </select>
-      <select id="methodSelect">
+      <input type="submit" value="Get Pokemon Names" />
+    </form>
+    <h3>/getPokemon</h3>
+    <form id="getPokemonForm" action="/getPokemon" method="get">
+      <label for="name">Name: </label>
+      <input id="getPokemonNameField" type="text" name="name" />
+      <label for="types">Types: </label>
+      <input id="getTypesField" type="text" name="types" min="0" max="100" step="1"/>
+      <label for="weaknesses">Weaknesses: </label>
+      <input id="getWeaknessesField" type="text" name="weaknesses" min="0" max="100" step="1"/>
+      <select id="getPokemonMethodSelect">
         <option value="get">GET</option>
         <option value="head">HEAD</option>
       </select>
       <input type="submit" value="Get Pokemon" />
+    </form>
+    <h3>/getPokemonByName</h3>
+    <form id="getPokemonByNameForm" action="/getPokemonByName" method="get">
+      <label for="name">Name: </label>
+      <input id="getByNameField" type="text" name="name" />
+      <select id="byNameMethodSelect">
+        <option value="get">GET</option>
+        <option value="head">HEAD</option>
+      </select>
+      <input type="submit" value="Get Pokemon By Name" />
+    </form>
+    <h3>/getAllPokemon</h3>
+      <form id="getAllPokemonForm" action="/getAllPokemon" method="get">
+      <select id="allMethodSelect">
+        <option value="get">GET</option>
+        <option value="head">HEAD</option>
+      </select>
+      <input type="submit" value="Get All Pokemon" />
+    </form>
+    <h3>/addPokemon</h3>
+    <form id="addPokemonForm" action="/addPokemon" method="post">
+      <label for="name">Name: </label>
+      <input id="addNameField" type="text" name="name" />
+      <label for="types">Types: </label>
+      <input id="addTypesField" type="text" name="types" min="0" max="100" step="1"/>
+      <label for="weaknesses">Weaknesses: </label>
+      <input id="addWeaknessesField" type="text" name="weaknesses" min="0" max="100" step="1"/>
+      <input type="submit" value="Add Pokemon" />
+    </form>
+    <h3>/addGeneration</h3>
+    <form id="generationForm" action="/addGeneration" method="post">
+      <label for="name">Name: </label>
+      <input id="generationNameField" type="text" name="name" />
+      <label for="generation">Generation: </label>
+      <input id="generationField" type="text" name="types" min="0" max="100" step="1"/>
+      <input type="submit" value="Add Generation" />
     </form>
   </section>
   <section id="content">

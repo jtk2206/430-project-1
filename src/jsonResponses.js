@@ -53,6 +53,11 @@ const getPokemonByName = (request, response) => {
 
   if (request.query.name){
     returnPokemon = returnPokemon.filter(pokemon => pokemon.name === request.query.name);
+    if (returnPokemon.length === 0){
+      responseJSON.message = 'No Pokemon with given name found'
+      responseJSON.id = 'pokemonNotFound';
+      return respondJSON(request, response, 404, responseJSON);
+    }
   } else{
     responseJSON.id = 'getPokemonMissingParams';
     return respondJSON(request, response, 400, responseJSON);
